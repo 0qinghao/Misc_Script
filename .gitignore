@@ -6,3 +6,12 @@
 !*.ps1
 !*.sh
 !*.pl
+!*.py
+!*.c
+!*.h
+!*.xla*
+!*.cpp
+!**/[Mm]akefile
+!*.md
+!*.tex
+!*.bat

@@ -127,6 +127,7 @@ foreach ($yuv_file in $src_yuv_list) {
 		}
 
 		mv test_enc.h265 "$test_root_dir\$yuv_file\$yuv_file`_qp$QP.h265"
+		mv dec.yuv "$test_root_dir\$yuv_file\$yuv_file`_dec_qp$QP.yuv"
 		if ((Test-Path rec_yuv.md5) -and (Test-Path dec_yuv.md5)) { mv rec_yuv.md5 "$test_root_dir\$yuv_file\$yuv_file`_qp$QP.md5" }
 		mv stats_out.log "$test_root_dir\$yuv_file\$yuv_file`_qp$QP`_enc.log"
 		mv stats_out.csv "$test_root_dir\$yuv_file\$yuv_file`_qp$QP.csv"
