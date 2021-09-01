@@ -86,7 +86,7 @@ foreach ($yuv_file in $src_yuv_list) {
 
 		$task_str = $task_str.ToString()
 		if ( -not ( [String]::IsNullOrEmpty( $task_str ))) { $task_str += "`n" }
-		$task_str += "cd $test_root_dir\$yuv_file\$QP; $test_root_dir\HEVC_encoder.exe -i $src_yuv_dir\$yuv_file.yuv -w 1920 -h 1088 -f $frames_to_be_encoded -gop $GOP -qp $QP; $test_root_dir\TAppDecoder_YUV.exe -b test_enc.h265 -o dec.yuv; $test_root_dir\md5.exe -n dec.yuv > dec_yuv.md5;" 
+		$task_str += "cd $test_root_dir\$yuv_file\$QP; $test_root_dir\HEVC_encoder.exe -i $src_yuv_dir\$yuv_file.yuv -w 1920 -h 1088 -f $frames_to_be_encoded -gop $GOP -qp $QP; $test_root_dir\TAppDecoder_YUV.exe -b test_enc.h265 -o dec.yuv; $test_root_dir\md5.exe -n dec.yuv > dec_yuv.md5;  $test_root_dir\md5.exe -n test_rec.yuv > rec_yuv.md5;" 
 		if ($VMAF) { $task_str += "$test_root_dir\vmaf.exe -r $src_yuv_dir\$yuv_file.yuv -d dec.yuv -w 1920 -h 1088 -p 420 -b 8 -o vmaf.csv --csv; " }
 		# log Enc task name
 		if ( -not ( [String]::IsNullOrEmpty( $task_name ))) { $task_name += "`n" }
