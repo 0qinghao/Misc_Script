@@ -1,0 +1,1 @@
+Get-ChildItem *.yuv | ForEach-Object { ./ffmpeg -s 1920*1080 -pix_fmt yuv420p -i $_ -vf pad=1920:1088 $_"1088.yuv" }

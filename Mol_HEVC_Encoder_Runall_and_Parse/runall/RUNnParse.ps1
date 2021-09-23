@@ -1,14 +1,16 @@
 #################### configuration part ####################
 # set thread numbers
 # set to $Total_logical_Processors may lead to CPU overload
-$Total_logical_Processors = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+# $Total_logical_Processors = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+# $Thread_num = $Total_logical_Processors 
+$Total_Cores = (Get-CimInstance -ClassName 'Win32_Processor' | Measure-Object -Property 'NumberOfCores' -Sum).Sum
+$Thread_num = $Total_Cores
 # $Thread_num = 8
-$Thread_num = $Total_logical_Processors 
 $src_yuv_dir = "\\pub\staff\derek.you\2019-07-30-FullhanSrc\420"
 # $VMAF = $true
 $VMAF = $false
-$frames_to_be_encoded = 15
-$GOP = 1
+$frames_to_be_encoded = 50 
+$GOP = 50 
 #################### configuration part end ####################
 
 
@@ -51,7 +53,7 @@ function StartTaskPool {
 				}
 			}
 		}
-		sleep 1
+		# sleep 1
 	} 
 }
 #################### function part end ####################
@@ -86,8 +88,10 @@ foreach ($yuv_file in $src_yuv_list) {
 
 		$task_str = $task_str.ToString()
 		if ( -not ( [String]::IsNullOrEmpty( $task_str ))) { $task_str += "`n" }
-		$task_str += "cd $test_root_dir\$yuv_file\$QP; $test_root_dir\HEVC_encoder.exe -i $src_yuv_dir\$yuv_file.yuv -w 1920 -h 1088 -f $frames_to_be_encoded -gop $GOP -qp $QP; $test_root_dir\TAppDecoder_YUV.exe -b test_enc.h265 -o dec.yuv; $test_root_dir\md5.exe -n dec.yuv > dec_yuv.md5;  $test_root_dir\md5.exe -n test_rec.yuv > rec_yuv.md5;" 
-		if ($VMAF) { $task_str += "$test_root_dir\vmaf.exe -r $src_yuv_dir\$yuv_file.yuv -d dec.yuv -w 1920 -h 1088 -p 420 -b 8 -o vmaf.csv --csv; " }
+		# $task_str += "cd $test_root_dir\$yuv_file\$QP; $test_root_dir\HEVC_encoder.exe -i $src_yuv_dir\$yuv_file.yuv -w 1920 -h 1088 -f $frames_to_be_encoded -gop $GOP -qp $QP; $test_root_dir\TAppDecoder_YUV.exe -b test_enc.h265 -o dec.yuv; $test_root_dir\md5.exe -n dec.yuv > dec_yuv.md5;  $test_root_dir\md5.exe -n test_rec.yuv > rec_yuv.md5;" 
+		# if ($VMAF) { $task_str += "$test_root_dir\vmaf.exe -r $src_yuv_dir\$yuv_file.yuv -d dec.yuv -w 1920 -h 1088 -p 420 -b 8 -o vmaf.csv --csv; " }
+		$task_str += "cd $test_root_dir\$yuv_file\$QP; $test_root_dir\HEVC_encoder.exe -i $src_yuv_dir\$yuv_file.yuv -w 1920 -h 1088 -f $frames_to_be_encoded -gop $GOP -qp $QP;" 
+		if ($VMAF) { $task_str += "$test_root_dir\TAppDecoder_YUV.exe -b test_enc.h265 -o dec.yuv; $test_root_dir\md5.exe -n dec.yuv > dec_yuv.md5;  $test_root_dir\md5.exe -n test_rec.yuv > rec_yuv.md5; $test_root_dir\vmaf.exe -r $src_yuv_dir\$yuv_file.yuv -d dec.yuv -w 1920 -h 1088 -p 420 -b 8 -o vmaf.csv --csv;" }
 		# log Enc task name
 		if ( -not ( [String]::IsNullOrEmpty( $task_name ))) { $task_name += "`n" }
 		$task_name += $yuv_file + "_QP" + $QP 
@@ -127,7 +131,7 @@ foreach ($yuv_file in $src_yuv_list) {
 		}
 
 		mv test_enc.h265 "$test_root_dir\$yuv_file\$yuv_file`_qp$QP.h265"
-		mv dec.yuv "$test_root_dir\$yuv_file\$yuv_file`_dec_qp$QP.yuv"
+		# mv dec.yuv "$test_root_dir\$yuv_file\$yuv_file`_dec_qp$QP.yuv"
 		if ((Test-Path rec_yuv.md5) -and (Test-Path dec_yuv.md5)) { mv rec_yuv.md5 "$test_root_dir\$yuv_file\$yuv_file`_qp$QP.md5" }
 		mv stats_out.log "$test_root_dir\$yuv_file\$yuv_file`_qp$QP`_enc.log"
 		mv stats_out.csv "$test_root_dir\$yuv_file\$yuv_file`_qp$QP.csv"
