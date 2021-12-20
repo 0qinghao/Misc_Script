@@ -13,13 +13,13 @@ function filtered = filter_with_texture_map(in, map)
                 src_sub = in(i - 1:i + 3, j - 1:j + 3);
             end
 
-            if (map(i, j) == 0)
-                filtered_sub = imopen(src_sub, se);
-                filtered(i:i + 3, j:j + 3) = filtered_sub(end - 3:end, end - 3:end);
-            else
-                filtered_sub = med_smooth(src_sub);
-                filtered(i:i + 3, j:j + 3) = filtered_sub(end - 3:end, end - 3:end);
-            end
+            % if (map(i, j) == 0)
+            filtered_sub = imopen(src_sub, se);
+            filtered(i:i + 3, j:j + 3) = filtered_sub(end - 3:end, end - 3:end);
+            % else
+            %     filtered_sub = med_smooth(src_sub);
+            %     filtered(i:i + 3, j:j + 3) = filtered_sub(end - 3:end, end - 3:end);
+            % end
         end
     end
 
