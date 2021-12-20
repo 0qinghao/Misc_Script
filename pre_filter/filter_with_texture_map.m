@@ -1,25 +1,26 @@
 function filtered = filter_with_texture_map(in, map)
-    se = strel('square', 2);
-
+    filtered_map = map;
     in = double(in);
     filtered = in;
 
     for i = 1:4:size(in, 1) - 4
         for j = 1:4:size(in, 2) - 4
+            if (filtered_map(i, j) == 0)
+                ii = i;
+                jj = j;
+                while (all(all(filtered_map(i:ii + 4, j:jj + 4) == 0)))
+                    ii = ii + 4;
+                    jj = jj + 4;
+                    if (ii > size(in, 1) - 4 || jj > size(in, 2) - 4)
+                        break;
+                    end
+                end
 
-            if (i == 1 || j == 1)
-                src_sub = in(i:i + 3, j:j + 3);
-            else
-                src_sub = in(i - 1:i + 3, j - 1:j + 3);
+                if (i ~= ii)
+                    filtered_map(i:ii + 3, j:jj + 3) = 1;
+                    filtered(i:ii + 3, j:jj + 3) = mean(mean(in(i:ii + 3, j:jj + 3)));
+                end
             end
-
-            % if (map(i, j) == 0)
-            filtered_sub = imopen(src_sub, se);
-            filtered(i:i + 3, j:j + 3) = filtered_sub(end - 3:end, end - 3:end);
-            % else
-            %     filtered_sub = med_smooth(src_sub);
-            %     filtered(i:i + 3, j:j + 3) = filtered_sub(end - 3:end, end - 3:end);
-            % end
         end
     end
 
