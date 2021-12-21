@@ -44,5 +44,5 @@ function texture_map = get_texture_map(in, Th_pow)
         end
     end
 
-    texture_map = uint8(texture_map * 128);
+    texture_map = logical(texture_map);
 end
