@@ -1,5 +1,5 @@
 vid = 'D:\FH420_300f\hk_floor_12M_1920x1088.yuv';
-TH = 16;
+TH = 20;
 
 [y, u, v] = yuvRead(vid, 1920, 1088, 1);
 

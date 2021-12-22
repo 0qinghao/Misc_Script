@@ -32,17 +32,21 @@ function texture_map = get_texture_map(in, Th_pow)
 
     % imshow(uint8(gy_image))
     Th = 2^Th_pow;
-    for i = 1:4:size(in, 1)
-        for j = 1:4:size(in, 2)
-            J11 = sum(sum(gx_image(i:i + 3, j:j + 3).^2));
-            J22 = sum(sum(gy_image(i:i + 3, j:j + 3).^2));
-            J12 = sum(sum(gx_image(i:i + 3, j:j + 3) .* gy_image(i:i + 3, j:j + 3)));
-            J21 = J12;
-            MA = J11 + J22 + (J11 - J22)^2 + 4 * J12 * J21;
+    for i = 1:8:size(in, 1)
+        for j = 1:8:size(in, 2)
+            % J11 = sum(sum(gx_image(i:i + 7, j:j + 7).^2));
+            % J22 = sum(sum(gy_image(i:i + 7, j:j + 7).^2));
+            % J12 = sum(sum(gx_image(i:i + 7, j:j + 7) .* gy_image(i:i + 7, j:j + 7)));
+            % J21 = J12;
+            % MA = J11 + J22 + (J11 - J22)^2 + 4 * J12 * J21;
+            MA = sum((gx_image(i:i + 7, j:j + 7).^2), [1, 2]) + sum((gy_image(i:i + 7, j:j + 7).^2), [1, 2]);
 
-            texture_map(i:i + 3, j:j + 3) = (MA >= Th);
+            texture_map(i:i + 7, j:j + 7) = (MA >= Th);
         end
     end
 
     texture_map = logical(texture_map);
+
+    % texture_map = zeros(size(in));
+    % texture_map = logical(texture_map);
 end
