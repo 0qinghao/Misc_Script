@@ -23,10 +23,10 @@ function out = filter_by_pix(in, TH)
             G3 = abs(sum(src_sub .* G_mat_3, [1, 2]));
             G4 = abs(sum(src_sub .* G_mat_4, [1, 2]));
 
-            isNoise = min([G1, G2, G3, G4]) > TH;
+            isSmooth = max([G1, G2, G3, G4]) < TH;
 
-            if (isNoise)
-                out(j, k) = round((sum(src_sub, [1, 2]) - in(j, k))/8);
+            if (isSmooth)
+                out(j, k) = round((sum(src_sub, [1, 2]) - in(j, k)) / 8);
             else
                 ;
             end
