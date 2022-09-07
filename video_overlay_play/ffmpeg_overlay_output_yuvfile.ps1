@@ -1,0 +1,3 @@
+ffmpeg.exe -i \\public\tpr\Derek.You\CBR_Compare\H265_2M\1_outdoor_day_cross_1920x1088\HM1625.h265 -i \\public\tpr\Derek.You\CBR_Compare\H265_2M\1_outdoor_day_cross_1920x1088\x265.h265 -i \\public\tpr\Derek.You\CBR_Compare\H265_2M\1_outdoor_day_cross_1920x1088\FH.h265 -i \\public\tpr\Derek.You\CBR_Compare\H265_2M\1_outdoor_day_cross_1920x1088\Mol.h265 -filter_complex "[2:v]setpts=2*PTS,scale=out_range=full[2:vs]; [0:v]pad=iw*2:ih*2[a];[a][1:v]overlay=w[b];[b][2:vs]overlay=0:h[c];[c][3:v]overlay=w:h"  merge3840x2176.yuv -y 
+
+#FH stream need additional options, to make color range and play speed suitable
