@@ -23,88 +23,52 @@ last_f11 = 0
 			flg=0
 			ToolTip 
 			break
+		}		
+		
+		if WinExist("超激斗梦境")
+			WinActivate ; 使用 WinExist 找到的窗口
+		ImageSearch, pX, pY, 1423, 61, 1916, 117, *16 tower_pad.bmp
+		if(ErrorLevel=0)
+		{
+			Click, 1405, 728, 30
+			sleep, 100
+			Click, 1224, 880
+			sleep, 100
+			Click, 1686, 1035
 		}
 
 		ImageSearch, Px, Py, 920, 700, 960, 1030, *90 start.bmp ; 搜索【开始战斗】按钮
-;		ImageSearch, Px, Py, 845, 680, 930, 1070, *8 start_bg.bmp ; 搜索【开始战斗】按钮
 		if (ErrorLevel=0 and flg=0) 
 		{
 			Click, %Px%, %Py%, Left
 			ToolTip, 开始, 256, 256
-;			Sleep, 100
-			Click, 600, 70, Left ; 送死
-			ToolTip, 送死, 256, 256
-;			Sleep, 100
-			Send, {F8}
-;			Click, 1550, 1020, Left ; 梦境
-			ToolTip, 菜单面板, 256, 256
-;			Click, 960,540,0
-;			Click, 1860, 1020, Left ; 菜单
-;			ToolTip, 菜单面板, 256, 256
-;			Click, 960,540,0
-		}
-
-;		ImageSearch, Px, Py, 590, 430, 670, 510, *96 梦境祝福.bmp ; 搜索【梦境祝福】按钮
-;		if (ErrorLevel=0 and flg=0) 
-;		{
-;			Click, %Px%, %Py%, Left
-;			ToolTip, 梦境祝福, 256, 256
-;			Sleep, 100
-;			Click, 960,540,0
-;		}
-		ImageSearch, Px, Py, 850, 720, 910, 770, *96 修理.bmp ; 搜索【梦境祝福-修理】按钮
+		}		
+		
+		ImageSearch, Px, Py, 805, 815, 890, 850, *32 继续挑战.bmp ; 
 		if (ErrorLevel=0 and flg=0) 
 		{
 			Click, %Px%, %Py%, Left
-;			repair_pad_flg = 1
-			ToolTip, 修理, 256, 256
-;			Sleep, 500
-;			Click, 960,540,0
+			ToolTip, 继续挑战, 256, 256
 		}
-		ImageSearch, Px, Py, 910, 235, 990, 265, *32 装备修理.bmp ; 搜索【梦境祝福-修理-装备修理】按钮
+		
+		ImageSearch, Px, Py, 500, 830, 900, 920, *32 战斗中绿脸.bmp ; 
 		if (ErrorLevel=0 and flg=0) 
 		{
-			; ImageSearch, tPx, tPy, 900, 580, 925, 610, *16 f.bmp 
-			; if(ErrorLevel=1 and flg=0)
-			; {
-			Click, %Px%, %Py%, Left
-			ToolTip, 装备修理标签卡, 256, 256
-;			Sleep, 100
-			Click, 960,540,0
-			; }
+			Click, 1365, 350, 0
+			Send, 1
+			Send, w
+			Send, r
+			Send, d
+			Send, 2
+			Click, 972, 551
+			ToolTip, 战斗中, 256, 256
 		}
-		ImageSearch, Px, Py, 1130, 800, 1220, 840, *64 全部修理.bmp ; 搜索【梦境祝福-修理-装备修理-全部修理】按钮
+		
+		ImageSearch, Px, Py, 770, 125, 1100, 650, *32 tower_clear_npc.bmp ; 
 		if (ErrorLevel=0 and flg=0) 
 		{
-			Click, %Px%, %Py%, Left
-;			repair_pad_flg = 0
-			ToolTip, 全部修理, 256, 256
-;			Sleep, 400
-;			Click, 960,540,0
-		}
-		; else
-		; {
-		; 	ImageSearch, Px, Py, 1130, 800, 1220, 840, *96 全部修理w.bmp ; 搜索【梦境祝福-修理-装备修理-全部修理】按钮
-		; 	if (ErrorLevel=0 and flg=0) 
-		; 	{
-		; 		Click, %Px%, %Py%, Left
-		; 		Sleep, 100
-		; 	}
-		; }
-		; ImageSearch, Px, Py, 970, 800, 1090, 840, *96 修理佩戴.bmp ; 搜索【梦境祝福-修理-装备修理-修理佩戴】按钮
-		; if (ErrorLevel=0 and flg=0) 
-		; {
-		; 	Click, %Px%, %Py%, Left
-		; 	Sleep, 100
-		; }
-		ImageSearch, Px, Py, 900, 670, 930, 700, *16 f11.bmp ; 搜索【再次挑战】快捷键图片
-		if (ErrorLevel=0 and flg=0) 
-		{
-			Click, %Px%, %Py%, Left
-			ToolTip, 再次挑战, 256, 256
-;			Sleep, 100
-			DllCall("QueryPerformanceCounter","Int64*",last_f11)
-			Click, 960,540,0
+			Click, 100, 100, Left
+			ToolTip, tower_clear_npc, 256, 256
 		}
 
 		ImageSearch, Px, Py, 900, 580, 925, 610, *16 f.bmp ; 搜索【确定】快捷键图片
@@ -118,20 +82,6 @@ last_f11 = 0
 			Click, 960,540,0
 		}
 
-		DllCall("QueryPerformanceCounter","Int64*",now)
-		if (last_f11!=0 and Round((now-last_f11)/QuadPart) > 5)
-		{
-			if WinExist("超激斗梦境")
-				WinActivate ; 使用 WinExist 找到的窗口
-		}
-		if ((last_f11!=0 and Round((now-last_f11)/QuadPart) > 60) or (not WinExist("超激斗梦境")))
-		{
-			relogin()
-			last_f11 = 0
-			; ToolTip, relogin
-		}
-
-		; Click, 0, 0, 0
 	}
 return
 
