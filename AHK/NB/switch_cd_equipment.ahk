@@ -21,7 +21,6 @@ Text_lizhuo:="|<>*45$29.zzzznzTzxXzzzxbzzztjzzztTzzrtzzzytzzzXtzzzDnzxztnzzvhDzz
 if (flg==0)
 {
 	Send, {Tab}
-	flg:=1
 	MouseGetPos, xsrc, ysrc 
 	stat:=1
 	Loop
@@ -71,6 +70,7 @@ if (flg==0)
 				Y5:=Y
 				Click, %X% %Y% Right
 				FindText().Click(xsrc, ysrc, 0)
+				flg:=1
 				break
 			}
 		}
