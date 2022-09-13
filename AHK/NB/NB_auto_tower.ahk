@@ -30,7 +30,8 @@ last_f11 = 0
 		ImageSearch, pX, pY, 1423, 61, 1916, 117, *16 tower_pad.bmp
 		if(ErrorLevel=0)
 		{
-			Click, 1405, 728, 30
+			Click, 1405, 728, 30 ; 族群
+;			Click, 1405, 915, 30 ; 1层
 			sleep, 100
 			Click, 1224, 880
 			sleep, 100
@@ -54,7 +55,7 @@ last_f11 = 0
 		ImageSearch, Px, Py, 500, 830, 900, 920, *32 战斗中绿脸.bmp ; 
 		if (ErrorLevel=0 and flg=0) 
 		{
-			Click, 1365, 350, 0
+			Click, 1405, 238, 0
 			Send, 1
 			Send, w
 			Send, r
