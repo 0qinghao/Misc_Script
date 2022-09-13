@@ -58,6 +58,8 @@ Text_minigame.=Text_minigame2
 ; Text_all.=Text_boss
 ; Text_all.=Text_minigame
 
+key_list_full:=["1","2","space","q","w","e","r","a","s","d"]
+
 stop_flg:=0
 stat:="idle"
 ret_pos:=[0,0]
@@ -142,7 +144,7 @@ stat_decide(ByRef ret_pos)
             }
         }
         cent_ind:=(ok.MaxIndex()+1)>>1
-        ret_pos:=[ok[cent_ind].x,ok[cent_ind].y]
+        ret_pos:=[ok[cent_ind].x+75,ok[cent_ind].y+100]
         return "hp_bar"
     }
 
@@ -162,18 +164,20 @@ play_minigame()
         if (ErrorLevel==0)
             FindText().Click(X, Y, Left)
 
-        if (ok:=FindText(X,Y,sr_minigameobj[1],sr_minigameobj[2],sr_minigameobj[3],sr_minigameobj[4],0,0,Text_minigame_obj,,,,,,9))
-        {
-            for i,v in ok
-            {
-                if (i<=19)
-                {
-                    ToolTip, minigame_obj, v[1], v[2], i
-                }
-            }
-            Random, rand_ind, 1, ok.MaxIndex()
-            FindText().Click(ok[rand_ind].x+55, ok[rand_ind].y+120, Left)
-        }
+        ; if (ok:=FindText(X,Y,sr_minigameobj[1],sr_minigameobj[2],sr_minigameobj[3],sr_minigameobj[4],0,0,Text_minigame_obj,,,,,,9))
+        ; {
+        ;     for i,v in ok
+        ;     {
+        ;         if (i<=19)
+        ;         {
+        ;             ToolTip, minigame_obj, v[1], v[2], i
+        ;         }
+        ;     }
+        ;     Random, rand_ind, 1, ok.MaxIndex()
+        ;     X_off:=ok[rand_ind].x+55
+        ;     Y_off:=ok[rand_ind].y+120
+        ;     Click,%X_off%,%Y_off%,Left
+        ; }
     }
 }
 
@@ -201,6 +205,48 @@ check_maintenance()
 {
 }
 
+fight_boss()
+{}
+
+fight_elite()
+{}
+
+fight_minion(pos)
+{
+    global key_list_full
+
+    x:=pos[1]
+    y:=pos[2]
+
+    Click,%x%,%y%,Right,2
+
+    Click,%x%,%y%,Left,5
+    cast_rand_skill(key_list_full)
+    Click,%x%,%y%,Left,5
+}
+
+cast_rand_skill(key_list)
+{
+    Random, rand_ind, 1, key_list.MaxIndex()
+    skill:=key_list[rand_ind]
+    if (skill=="space")
+        Send, {space}
+    else
+        Send, %skill%
+}
+
+rand_move()
+{
+    Random, x, 930, 1630
+    Random, y, 290, 790
+    Click,%x%,%y%,Left
+    Sleep, 500
+}
+
+skip_animation(pos)
+{
+}
+
 ^h:: stop_flg := !stop_flg
 
 ^g::
@@ -221,17 +267,22 @@ check_maintenance()
         case "idle":
             ToolTip, s_idle,,,20
             check_maintenance()
+            rand_move()
         case "minigame":
             ToolTip, s_minigame,,,20
             play_minigame()
         case "boss":
             ToolTip, s_boss,,,20
+            fight_boss()
         case "elite":
             ToolTip, s_elite,,,20
+            fight_elite()
         case "hp_bar":
             ToolTip, s_hp_bar,,,20
+            fight_minion(ret_pos)
         case "animation":
             ToolTip, s_animation,,,20
+            skip_animation(ret_pos)
         case "next_game_pad":
             ToolTip, s_next_game_pad,,,20
             do_sth_b4_next_game()
