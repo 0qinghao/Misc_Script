@@ -10,7 +10,7 @@ sr_full:=[0,0,2560,1080]
 sr_elite:=[]
 sr_boss:=[]
 sr_animation:=[]
-sr_next_game_pad:=[]
+sr_between_2_game:=[]
 sr_oyaji_shop:=[]
 
 ; search text
@@ -27,17 +27,17 @@ Text_elite_x1:="|<elite>*170$7.nNCDD39AiM"
 Text_elite_x2:="|<elite>EFECE6-828080$10.3QDUw3UT1gAlXgCU"
 Text_minigame1:="|<minigame>##0$0/0/040404,0/11/040404,62/11/000000,62/0/000000"
 Text_minigame2:="|<minigame>*113$8.tk3btyQ0tyTb003zU"
-Text_minigame_obj:="|<>##0$0/0/565453,18/0/565453,40/0/565453,-12/9/565553,-12/13/565553"
+Text_minigame_obj:="|<minigame_obj>##0$0/0/565453,18/0/565453,40/0/565453,-12/9/565553,-12/13/565553"
 Text_animation:=
-Text_next_game_pad1:=
-Text_next_game_pad2:=
+Text_between_2_game1:=
+Text_between_2_game2:=
 
 ; init
 Text_hp_bar:=""
 Text_elite:=""
 Text_boss:=""
 Text_minigame:=""
-Text_next_game_pad:=""
+Text_between_2_game:=""
 Text_hp_bar.=Text_hp_bar_start
 Text_hp_bar.=Text_hp_bar_mid
 Text_elite.=Text_elite_jv
@@ -51,7 +51,6 @@ Text_elite.=Text_elite_x2
 Text_boss.=Text_c2_boss_icon
 ;Text_minigame.=Text_minigame1
 Text_minigame.=Text_minigame2
-
 ; Text_all:=""
 ; Text_all.=Text_hp_bar
 ; Text_all.=Text_elite
@@ -64,9 +63,10 @@ stop_flg:=0
 stat:="idle"
 ret_pos:=[0,0]
 
+; todo: update stat_prev, to check timeout
 stat_decide(ByRef ret_pos)
 {
-    ; 优先级：minigame - boss - elite - animation - next_game_pad - hp_bar
+    ; 优先级：minigame - boss - elite - animation - between_2_game - hp_bar
     global sr_minigame, sr_full, sr_boss, sr_elite, Text_hp_bar, Text_elite, Text_boss, Text_minigame
 
     if (ok:=FindText(X,Y,sr_minigame[1],sr_minigame[2],sr_minigame[3],sr_minigame[4],0,0,Text_minigame,,,,,,9))
@@ -121,17 +121,17 @@ stat_decide(ByRef ret_pos)
         return "animation"
     }
 
-    if (ok:=FindText(X,Y,sr_next_game_pad[1],sr_next_game_pad[2],sr_next_game_pad[3],sr_next_game_pad[4],0,0,Text_next_game_pad,,,,,,9))
+    if (ok:=FindText(X,Y,sr_between_2_game[1],sr_between_2_game[2],sr_between_2_game[3],sr_between_2_game[4],0,0,Text_between_2_game,,,,,,9))
     {
         for i,v in ok
         {
             if (i<=19)
             {
-                ToolTip, next_game_pad, v[1], v[2], i
+                ToolTip, between_2_game, v[1], v[2], i
             }
         }
         ret_pos:=[ok[1].x,ok[1].y]
-        return "next_game_pad"
+        return "between_2_game"
     }
 
     if (ok:=FindText(X,Y,sr_full[1],sr_full[2],sr_full[3],sr_full[4],0,0,Text_hp_bar,,,,,,9))
@@ -143,26 +143,32 @@ stat_decide(ByRef ret_pos)
                 ToolTip, hp_bar, v[1], v[2], i
             }
         }
-        cent_ind:=(ok.MaxIndex()+1)>>1
-        ret_pos:=[ok[cent_ind].x+75,ok[cent_ind].y+100]
+        ; cent_ind:=(ok.MaxIndex()+1)>>1
+        ; ret_pos:=[ok[cent_ind].x+75,ok[cent_ind].y+100]
+        ret_pos:=[ok[1].x+75,ok[1].y+100]
         return "hp_bar"
     }
 
     return "idle"
 }
 
+; todo: clip x,y
 play_minigame()
 {
     global sr_minigameobj, Text_minigame_obj
 
-    PixelSearch, X, Y, sr_minigameobj[1], sr_minigameobj[2], sr_minigameobj[3], sr_minigameobj[4], 0x1dbffd, 2, Fast
+    PixelSearch, X, Y, sr_minigameobj[1], sr_minigameobj[2], sr_minigameobj[3], sr_minigameobj[4], 0x1dbffd, 2, Fast ; 金黄色
     if (ErrorLevel==0)
+    {
         FindText().Click(X, Y, Left)
+    }
     else 
     {
-        PixelSearch, X, Y, sr_minigameobj[1], sr_minigameobj[2], sr_minigameobj[3], sr_minigameobj[4], 0xa0c0ee, 2, Fast
+        PixelSearch, X, Y, sr_minigameobj[1], sr_minigameobj[2], sr_minigameobj[3], sr_minigameobj[4], 0xa0c0ee, 2, Fast ; 淡黄肤色
         if (ErrorLevel==0)
+        {
             FindText().Click(X, Y, Left)
+        }
 
         ; if (ok:=FindText(X,Y,sr_minigameobj[1],sr_minigameobj[2],sr_minigameobj[3],sr_minigameobj[4],0,0,Text_minigame_obj,,,,,,9))
         ; {
@@ -211,6 +217,7 @@ fight_boss()
 fight_elite()
 {}
 
+; todo: clip x,y
 fight_minion(pos)
 {
     global key_list_full
@@ -220,6 +227,8 @@ fight_minion(pos)
 
     Click,%x%,%y%,Right,2
 
+    ; todo: hold left
+    ; todo: set hold time depend on distance
     Click,%x%,%y%,Left,5
     cast_rand_skill(key_list_full)
     Click,%x%,%y%,Left,5
@@ -235,6 +244,7 @@ cast_rand_skill(key_list)
         Send, %skill%
 }
 
+; todo: set move strategy, move around whole map
 rand_move()
 {
     Random, x, 930, 1630
@@ -283,8 +293,8 @@ skip_animation(pos)
         case "animation":
             ToolTip, s_animation,,,20
             skip_animation(ret_pos)
-        case "next_game_pad":
-            ToolTip, s_next_game_pad,,,20
+        case "between_2_game":
+            ToolTip, s_between_2_game,,,20
             do_sth_b4_next_game()
         }
 
