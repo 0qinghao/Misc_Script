@@ -99,9 +99,15 @@
 
 CoordMode, ToolTip, Screen
 `:: 
-    PixelSearch, X, Y, 0, 0, 1920, 1080, 0x4f2a29, 0, Fast 
-    if (ErrorLevel==0)
-    {
-        FindText().Click(X, Y, Left)
-        ToolTip, minigame_obj, %X%, %Y%, 11 
-    }
+    x:=500
+    y:=500
+    Click,%x%,%y%,Right,2
+    click,365,86
+    Click,%x%,%y%,Down
+
+    x:=550
+    y:=550
+    Click,%x%,%y%,Down
+    ; cast_rand_skill(key_list_full)
+    ; cast_rand_skill(key_list_full)
+    Click,%x%,%y%,UP

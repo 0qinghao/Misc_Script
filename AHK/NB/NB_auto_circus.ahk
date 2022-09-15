@@ -1,3 +1,5 @@
+#NoEnv
+#SingleInstance Force
 #Include <FindText>
 ; SetDefaultMouseSpeed, 0
 CoordMode, ToolTip, Screen
@@ -57,7 +59,7 @@ Text_minigame.=Text_minigame2
 ; Text_all.=Text_boss
 ; Text_all.=Text_minigame
 
-key_list_full:=["1","2","space","q","w","e","r","a","s","d"]
+key_list_full:=["1","2","3","q","w","e","r","a","s","d"]
 
 stop_flg:=0
 stat:="idle"
@@ -144,8 +146,8 @@ stat_decide(ByRef ret_pos)
             }
         }
         ; cent_ind:=(ok.MaxIndex()+1)>>1
-        ; ret_pos:=[ok[cent_ind].x+75,ok[cent_ind].y+100]
-        ret_pos:=[ok[1].x+75,ok[1].y+100]
+        ; ret_pos:=[ok[cent_ind].x+75,ok[cent_ind].y+130]
+        ret_pos:=[ok[1].x+75,ok[1].y+130]
         return "hp_bar"
     }
 
@@ -182,7 +184,7 @@ play_minigame()
         ;     Random, rand_ind, 1, ok.MaxIndex()
         ;     X_off:=ok[rand_ind].x+55
         ;     Y_off:=ok[rand_ind].y+120
-        ;     Click,%X_off%,%Y_off%,Left
+        ;     Click,%X_off%,%Y_off%
         ; }
     }
 }
@@ -218,20 +220,34 @@ fight_elite()
 {}
 
 ; todo: clip x,y
+; todo: 能否做到两次进入 minion 状态之间保持鼠标down
+; todo: 左键点击位置无法产生移动时按住 shift 强制攻击
 fight_minion(pos)
 {
-    global key_list_full
+    global key_list_full, sr_full, Text_hp_bar
 
     x:=pos[1]
     y:=pos[2]
 
     Click,%x%,%y%,Right,2
-
-    ; todo: hold left
-    ; todo: set hold time depend on distance
-    Click,%x%,%y%,Left,5
+    Click,%x%,%y%,Down
+    ; todo: move until near hp_bar
+    if (ok:=FindText(X,Y,sr_full[1],sr_full[2],sr_full[3],sr_full[4],0,0,Text_hp_bar,,,,,,9))
+    {
+        for i,v in ok
+        {
+            if (i<=19)
+            {
+                ToolTip, hp_bar, v[1], v[2], i
+            }
+        }
+        x:=ok[1].x+75
+        y:=ok[1].y+130
+    }
+    Click,%x%,%y%,Down
     cast_rand_skill(key_list_full)
-    Click,%x%,%y%,Left,5
+    ; cast_rand_skill(key_list_full)
+    Click,%x%,%y%,UP
 }
 
 cast_rand_skill(key_list)
@@ -249,7 +265,7 @@ rand_move()
 {
     Random, x, 930, 1630
     Random, y, 290, 790
-    Click,%x%,%y%,Left
+    Click,%x%,%y%
     Sleep, 500
 }
 
