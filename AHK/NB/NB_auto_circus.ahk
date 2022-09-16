@@ -5,15 +5,30 @@
 CoordMode, ToolTip, Screen
 SetStoreCapsLockMode, Off
 
+; DBG switch
+DBG:=true
+; DBG:=false
+
+; safe click range
+SAFE_RANGE:={x0:0, y0:0, x1:1840, y1:850}
+
 ; search range
-sr_minigame:=[2243, 355, 2558, 782]
-sr_minigameobj:=[732, 259, 1838, 852]
-sr_full:=[0,0,2560,1080]
-sr_elite:=[]
-sr_boss:=[]
-sr_animation:=[]
-sr_between_2_game:=[]
-sr_oyaji_shop:=[]
+sr_minigame:={x0:2243, y0:355, x1:2558, y1:782}
+sr_minigameobj:={x0:732, y0:259, x1:1838, y1:852}
+sr_full:={x0:0, y0:0, x1:2560, y1:1080}
+sr_elite:={x0:0, y0:0, x1:0, y1:0}
+sr_boss:={x0:0, y0:0, x1:0, y1:0}
+sr_animation:={x0:0, y0:0, x1:0, y1:0}
+sr_between_2_game:={x0:0, y0:0, x1:0, y1:0}
+sr_oyaji_shop:={list_x0:0, list_y0:0, list_x1:0, list_y1:0, confirm_x0:0, confirm_y0:0, confirm_x1:0, confirm_y1:0}
+; sr_minigame:=[2243, 355, 2558, 782]
+; sr_minigameobj:=[732, 259, 1838, 852]
+; sr_full:=[0,0,2560,1080]
+; sr_elite:=[]
+; sr_boss:=[]
+; sr_animation:=[]
+; sr_between_2_game:=[]
+; sr_oyaji_shop:=[]
 
 ; search text
 Text_hp_bar_start:="|<hp_bar>##0$0/0/001829,0/1/00212E,1/0/E7690B,4/-2/FF9532,5/4/002B3F"
@@ -59,11 +74,12 @@ Text_minigame.=Text_minigame2
 ; Text_all.=Text_boss
 ; Text_all.=Text_minigame
 
-key_list_full:=["1","2","3","q","w","e","r","a","s","d"]
+; key_list_full:=["1","2","3","q","w","e","r","a","s","d"]
+key_list_full:=["1","2","space","q","w","e","r","a","s","d"]
 
 stop_flg:=0
 stat:="idle"
-ret_pos:=[0,0]
+ret_pos:={x:0, y:0}
 
 ; todo: update stat_prev, to check timeout
 stat_decide(ByRef ret_pos)
@@ -71,83 +87,87 @@ stat_decide(ByRef ret_pos)
     ; 优先级：minigame - boss - elite - animation - between_2_game - hp_bar
     global sr_minigame, sr_full, sr_boss, sr_elite, Text_hp_bar, Text_elite, Text_boss, Text_minigame
 
-    if (ok:=FindText(X,Y,sr_minigame[1],sr_minigame[2],sr_minigame[3],sr_minigame[4],0,0,Text_minigame,,,,,,9))
+    if (ok:=FindText(X,Y,sr_minigame.x0,sr_minigame.y0,sr_minigame.x1,sr_minigame.y1,0,0,Text_minigame,,,,,,9))
     {
         for i,v in ok
         {
             if (i<=19)
             {
-                ToolTip, minigame, v[1], v[2], i
+                tooltip_dbg("minigame",v[1],v[2],i)
             }
         }
-        ret_pos:=[ok[1].x,ok[1].y]
+        ret_pos.x:=ok[1].x
+        ret_pos.y:=ok[1].y
         return "minigame"
     }
 
-    if (ok:=FindText(X,Y,sr_boss[1],sr_boss[2],sr_boss[3],sr_boss[4],0,0,Text_boss,,,,,,9))
+    if (ok:=FindText(X,Y,sr_boss.x0,sr_boss.y0,sr_boss.x1,sr_boss.y1,0,0,Text_boss,,,,,,9))
     {
         for i,v in ok
         {
             if (i<=19)
             {
-                ToolTip, boss, v[1], v[2], i
+                tooltip_dbg("boss",v[1],v[2],i)
             }
         }
-        ret_pos:=[ok[1].x,ok[1].y]
+        ret_pos.x:=ok[1].x
+        ret_pos.y:=ok[1].y
         return "boss"
     }
 
-    if (ok:=FindText(X,Y,sr_elite[1],sr_elite[2],sr_elite[3],sr_elite[4],0,0,Text_elite,,,,,,9))
+    if (ok:=FindText(X,Y,sr_elite.x0,sr_elite.y0,sr_elite.x1,sr_elite.y1,0,0,Text_elite,,,,,,9))
     {
         for i,v in ok
         {
             if (i<=19)
             {
-                ToolTip, elite, v[1], v[2], i
+                tooltip_dbg("elite",v[1],v[2],i)
             }
         }
-        ret_pos:=[ok[1].x,ok[1].y]
+        ret_pos.x:=ok[1].x
+        ret_pos.y:=ok[1].y
         return "elite"
     }
 
-    if (ok:=FindText(X,Y,sr_animation[1],sr_animation[2],sr_animation[3],sr_animation[4],0,0,Text_animation,,,,,,9))
+    if (ok:=FindText(X,Y,sr_animation.x0,sr_animation.y0,sr_animation.x1,sr_animation.y1,0,0,Text_animation,,,,,,9))
     {
         for i,v in ok
         {
             if (i<=19)
             {
-                ToolTip, animation, v[1], v[2], i
+                tooltip_dbg("animation",v[1],v[2],i)
             }
         }
-        ret_pos:=[ok[1].x,ok[1].y]
+        ret_pos.x:=ok[1].x
+        ret_pos.y:=ok[1].y
         return "animation"
     }
 
-    if (ok:=FindText(X,Y,sr_between_2_game[1],sr_between_2_game[2],sr_between_2_game[3],sr_between_2_game[4],0,0,Text_between_2_game,,,,,,9))
+    if (ok:=FindText(X,Y,sr_between_2_game.x0,sr_between_2_game.y0,sr_between_2_game.x1,sr_between_2_game.y1,0,0,Text_between_2_game,,,,,,9))
     {
         for i,v in ok
         {
             if (i<=19)
             {
-                ToolTip, between_2_game, v[1], v[2], i
+                tooltip_dbg("between_2_game",v[1],v[2],i)
             }
         }
-        ret_pos:=[ok[1].x,ok[1].y]
+        ret_pos.x:=ok[1].x
+        ret_pos.y:=ok[1].y
         return "between_2_game"
     }
 
-    if (ok:=FindText(X,Y,sr_full[1],sr_full[2],sr_full[3],sr_full[4],0,0,Text_hp_bar,,,,,,9))
+    if (ok:=FindText(X,Y,sr_full.x0,sr_full.y0,sr_full.x1,sr_full.y1,0,0,Text_hp_bar,,,,,,9))
     {
         for i,v in ok
         {
             if (i<=19)
             {
-                ToolTip, hp_bar, v[1], v[2], i
+                tooltip_dbg("hp_bar",v[1],v[2],i)
             }
         }
-        ; cent_ind:=(ok.MaxIndex()+1)>>1
-        ; ret_pos:=[ok[cent_ind].x+75,ok[cent_ind].y+130]
-        ret_pos:=[ok[1].x+75,ok[1].y+130]
+        ret_pos.x:=ok[1].x+75
+        ret_pos.y:=ok[1].y+130
         return "hp_bar"
     }
 
@@ -159,17 +179,17 @@ play_minigame()
 {
     global sr_minigameobj, Text_minigame_obj
 
-    PixelSearch, X, Y, sr_minigameobj[1], sr_minigameobj[2], sr_minigameobj[3], sr_minigameobj[4], 0x1dbffd, 2, Fast ; 金黄色
+    PixelSearch, X, Y, sr_minigameobj.x0, sr_minigameobj.y0, sr_minigameobj.x1, sr_minigameobj.y1, 0x1dbffd, 2, Fast ; 金黄色
     if (ErrorLevel==0)
     {
-        FindText().Click(X, Y, Left)
+        FindText().Click(X, Y, "L")
     }
     else 
     {
-        PixelSearch, X, Y, sr_minigameobj[1], sr_minigameobj[2], sr_minigameobj[3], sr_minigameobj[4], 0xa0c0ee, 2, Fast ; 淡黄肤色
+        PixelSearch, X, Y, sr_minigameobj.x0, sr_minigameobj.y0, sr_minigameobj.x1, sr_minigameobj.y1, 0xa0c0ee, 2, Fast ; 淡黄肤色
         if (ErrorLevel==0)
         {
-            FindText().Click(X, Y, Left)
+            FindText().Click(X, Y, "L")
         }
 
         ; if (ok:=FindText(X,Y,sr_minigameobj[1],sr_minigameobj[2],sr_minigameobj[3],sr_minigameobj[4],0,0,Text_minigame_obj,,,,,,9))
@@ -178,7 +198,7 @@ play_minigame()
         ;     {
         ;         if (i<=19)
         ;         {
-        ;             ToolTip, minigame_obj, v[1], v[2], i
+        ;             tooltip_dbg("minigame_obj",v[1],v[2],i)
         ;         }
         ;     }
         ;     Random, rand_ind, 1, ok.MaxIndex()
@@ -189,11 +209,26 @@ play_minigame()
     }
 }
 
+tooltip_dbg(txt,x,y,n)
+{
+    global DBG
+
+    if(DBG)
+    {
+        ToolTip, %txt%, %x%, %y%, %n% 
+    }
+}
+
 clear_tooltip()
 {
-    Loop, 19
+    global DBG
+
+    if(DBG)
     {
-        ToolTip, , 0, 0, %A_Index%
+        Loop, 19
+        {
+            ToolTip, , 0, 0, %A_Index%
+        }
     }
 }
 
@@ -226,13 +261,14 @@ fight_minion(pos)
 {
     global key_list_full, sr_full, Text_hp_bar
 
-    x:=pos[1]
-    y:=pos[2]
+    x:=pos.x
+    y:=pos.y
 
+    ; todo: check if jump twice
     Click,%x%,%y%,Right,2
     Click,%x%,%y%,Down
     ; todo: move until near hp_bar
-    if (ok:=FindText(X,Y,sr_full[1],sr_full[2],sr_full[3],sr_full[4],0,0,Text_hp_bar,,,,,,9))
+    if (ok:=FindText(X,Y,sr_full.x0,sr_full.y0,sr_full.x1,sr_full.y1,0,0,Text_hp_bar,,,,,,9))
     {
         for i,v in ok
         {
@@ -273,6 +309,20 @@ skip_animation(pos)
 {
 }
 
+check_hp_mp()
+{
+}
+
+clip_xy(ByRef x, ByRef y)
+{
+    global SAFE_RANGE
+
+    x := (x<SAFE_RANGE.x0) ? SAFE_RANGE.x0 : ((x>SAFE_RANGE.x1) ? SAFE_RANGE.x1 : x)
+    y := (y<SAFE_RANGE.y0) ? SAFE_RANGE.y0 : ((y>SAFE_RANGE.y1) ? SAFE_RANGE.y1 : y)
+}
+
+F4:: Reload
+
 ^h:: stop_flg := !stop_flg
 
 ^g::
@@ -291,7 +341,7 @@ skip_animation(pos)
         switch stat
         {
         case "idle":
-            ToolTip, s_idle,,,20
+            tooltip_dbg("s_idle",0,0,20)
             check_maintenance()
             rand_move()
         case "minigame":
@@ -299,12 +349,15 @@ skip_animation(pos)
             play_minigame()
         case "boss":
             ToolTip, s_boss,,,20
+            check_hp_mp()
             fight_boss()
         case "elite":
             ToolTip, s_elite,,,20
+            check_hp_mp()
             fight_elite()
         case "hp_bar":
             ToolTip, s_hp_bar,,,20
+            check_hp_mp()
             fight_minion(ret_pos)
         case "animation":
             ToolTip, s_animation,,,20
