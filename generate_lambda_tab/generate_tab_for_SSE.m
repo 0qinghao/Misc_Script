@@ -1,15 +1,16 @@
 % x265 src: lambda2 = 0.038 * exp(0.234 * QP)
+% hm src: lambda = Factor(0.5左右) * pow(2,(qp-12)/3) (P帧还会再扩(qp-12)/6倍,clip到2~4)
 
 qp = 0:51;
 
 lambda2_src = 0.038 .* exp(0.234 .* qp);
 lambda2_src = round(lambda2_src * 256);
+ 
+% lambda2_tn = 0.01 .* exp(0.2 .* qp);
+% lambda2_tn = round(lambda2_tn * 256);
 
-% lambda2_t3 = 0.038 .* exp(0.225 .* qp);
-% lambda2_t3 = round(lambda2_t3 * 256);
-
-lambda2_tn = 0.076 .* exp(0.234 .* qp);
-lambda2_tn = round(lambda2_tn * 256);
+lambda2_tn = 0.74 * 0.5 * 2 .^ (max(0,(qp-12))/3) .* min(max((qp+4)/8,2),4);
+lambda2_tn = round(lambda2_tn*256);
 
 fprintf('{\n')
 for i=1:52

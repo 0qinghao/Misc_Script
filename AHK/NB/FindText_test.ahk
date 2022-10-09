@@ -1,4 +1,4 @@
-;#include <FindText>
+; #include <FindText>
 ;Text:="|<auto>*159$40.0000k000003000000A00DVUnw7lr6371nUAMAA630FUkkkAT63330rgMAAA1kFUkkkD363330wAAAA62vkvkkQtt1v1kS8" ; Image of the "auto" part in "autohotkey.com". Id of the image is "auto" (between < and > characters).
 ;ok := FindText(outX, outY,,,,,,,Text) ; Call FindText to look for the "auto" image. outX and outY will be set to X and Y coordinates for the first found result. Search range coordinates, err1 and err0 are left empty to use the default values (searching the whole screen, and looking for an exact match). Results will be stored in the "ok" variable.
 ;if ok { ; Check if "ok" is not set to 0
@@ -96,18 +96,127 @@
 ;     else
 ;         Send, %skill%
 ; }
+#NoEnv
+#SingleInstance Force
+#Include <FindText>
+; SetDefaultMouseSpeed, 0
+CoordMode, ToolTip, Screen
+SetStoreCapsLockMode, Off
+
+; DBG switch
+DBG:=true
+; DBG:=false
+
+; safe click range
+SAFE_RANGE:={x0:0, y0:0, x1:1840, y1:850}
+
+; hp_bar to hit box offset
+hp_bar_2_hit_box_offset:={x:75, y:130}
+
+; search range
+; x0,y0---------------------
+; --------------------------
+; --------------------------
+; --------------------------
+; ---------------------x1,y1
+sr_minigame:={x0:2243, y0:355, x1:2558, y1:782}
+sr_minigameobj:={x0:732, y0:259, x1:1838, y1:852}
+sr_full:={x0:0, y0:0, x1:2560, y1:1080}
+sr_elite:={x0:0, y0:0, x1:0, y1:0}
+sr_boss:={x0:0, y0:0, x1:0, y1:0}
+sr_animation:={x0:0, y0:0, x1:0, y1:0}
+sr_between_2_game:={x0:0, y0:0, x1:0, y1:0}
+sr_oyaji_shop:={list_x0:0, list_y0:0, list_x1:0, list_y1:0, confirm_x0:0, confirm_y0:0, confirm_x1:0, confirm_y1:0}
+
+; all search text
+Text_hp_bar_start:="|<hp_bar>##0$0/0/001829,0/1/00212E,1/0/E7690B,4/-2/FF9532,5/4/002B3F"
+Text_hp_bar_mid:="|<hp_bar>##0$0/0/FF9532,0/1/ED6600,1/1/00111F,0/3/EB6304,1/3/00101E,0/4/E55C04,1/4/00121E"
+Text_c2_boss_icon:="|<boss>*53$35.00007UAM00T00001y60664wD3wtF8NzzrUElyTblVTsy3X2Tbb7Q1xlu7s07607c0w00SE3o00R17800q3Ak01A7F002MD2004kS00U9kwE301lkEU03nUY007b1U001i1U000t3002My6007t"
+Text_elite_jv:="|<elite>0xFDAD2B@0.60$10.zy080zzzs0U20Dzzy080U3zs"
+Text_elite_xin1:="|<elite>*120$17.zrzzjz00TyzzxzU00001"
+Text_elite_xin2:="|<elite>*160$7.irPhqvxyszw"
+Text_elite_per1:="|<elite>*210$6.vryhxRxyU"
+Text_elite_per2:="|<elite>*120$8.bNaPYXFYvAnQU"
+Text_elite_per3:="|<elite>#39@0.60$9.vyTqQVdXANbAwA"
+Text_elite_x1:="|<elite>*170$7.nNCDD39AiM"
+Text_elite_x2:="|<elite>EFECE6-828080$10.3QDUw3UT1gAlXgCU"
+Text_minigame1:="|<minigame>##0$0/0/040404,0/11/040404,62/11/000000,62/0/000000"
+Text_minigame2:="|<minigame>*113$8.tk3btyQ0tyTb003zU"
+Text_minigame_obj:="|<minigame_obj>##0$0/0/565453,18/0/565453,40/0/565453,-12/9/565553,-12/13/565553"
+Text_animation:=
+Text_between_2_game1:=
+Text_between_2_game2:=
+
+; create Text
+Text_hp_bar:=""
+Text_hp_bar.=Text_hp_bar_start
+Text_hp_bar.=Text_hp_bar_mid
+Text_elite:=""
+Text_elite.=Text_elite_jv
+Text_elite.=Text_elite_xin1
+;Text_elite.=Text_elite_xin2
+Text_elite.=Text_elite_per1
+Text_elite.=Text_elite_per2
+Text_elite.=Text_elite_per3
+Text_elite.=Text_elite_x1
+Text_elite.=Text_elite_x2
+Text_boss:=""
+Text_boss.=Text_c2_boss_icon
+Text_minigame:=""
+;Text_minigame.=Text_minigame1
+Text_minigame.=Text_minigame2
+Text_between_2_game:=""
+; Text_all:=""
+; Text_all.=Text_hp_bar
+; Text_all.=Text_elite
+; Text_all.=Text_boss
+; Text_all.=Text_minigame
+
+; skill key
+; key_list_full:=["1","2","3","q","w","e","r","a","s","d"]
+key_list_full:=["1","2","space","q","w","e","r","a","s","d"]
+
+; init
+stop_flg:=0
+stat:="idle"
+ret_pos:={x:0, y:0}
+
+clip_xy(ByRef x, ByRef y)
+{
+    global SAFE_RANGE
+
+    x := (x<SAFE_RANGE.x0) ? SAFE_RANGE.x0 : ((x>SAFE_RANGE.x1) ? SAFE_RANGE.x1 : x)
+    y := (y<SAFE_RANGE.y0) ? SAFE_RANGE.y0 : ((y>SAFE_RANGE.y1) ? SAFE_RANGE.y1 : y)
+
+    If (x==SAFE_RANGE.x0 || x==SAFE_RANGE.x1 || y==SAFE_RANGE.y0 || y==SAFE_RANGE.y1 )
+    {
+        return 0
+    }
+    else
+    {
+        return 1
+    }
+}
 
 CoordMode, ToolTip, Screen
-`:: 
-    x:=500
-    y:=500
-    Click,%x%,%y%,Right,2
-    click,365,86
-    Click,%x%,%y%,Down
+`::
+PixelSearch, X, Y, 0, 0, 1920, 1080, 0x5f5f00, 10, Fast ;
+if (ErrorLevel==0)
+{
+    if(clip_xy(X,Y)) ; 1 means safe
+    {
+        FindText().Click(X, Y, "L")
+    }
+}
+; x:=500
+; y:=500
+; Click,%x%,%y%,Right,2
+; click,365,86
+; Click,%x%,%y%,Down
 
-    x:=550
-    y:=550
-    Click,%x%,%y%,Down
-    ; cast_rand_skill(key_list_full)
-    ; cast_rand_skill(key_list_full)
-    Click,%x%,%y%,UP
+; x:=550
+; y:=550
+; Click,%x%,%y%,Down
+; ; cast_rand_skill(key_list_full)
+; ; cast_rand_skill(key_list_full)
+; Click,%x%,%y%,UP
