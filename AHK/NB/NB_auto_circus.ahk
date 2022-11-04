@@ -26,7 +26,7 @@ sr_minigameobj:={x0:732, y0:259, x1:1838, y1:852}
 sr_full:={x0:0, y0:0, x1:2560, y1:1080}
 sr_elite:={x0:0, y0:0, x1:0, y1:0}
 sr_boss:={x0:0, y0:0, x1:0, y1:0}
-sr_animation:={x0:0, y0:0, x1:0, y1:0}
+sr_animation:={x0:2465, y0:1020, x1:2505, y1:1060}
 sr_between_2_game:={x0:0, y0:0, x1:0, y1:0}
 sr_oyaji_shop:={list_x0:0, list_y0:0, list_x1:0, list_y1:0, confirm_x0:0, confirm_y0:0, confirm_x1:0, confirm_y1:0}
 
@@ -45,7 +45,7 @@ Text_elite_x2:="|<elite>EFECE6-828080$10.3QDUw3UT1gAlXgCU"
 Text_minigame1:="|<minigame>##0$0/0/040404,0/11/040404,62/11/000000,62/0/000000"
 Text_minigame2:="|<minigame>*113$8.tk3btyQ0tyTb003zU"
 Text_minigame_obj:="|<minigame_obj>##0$0/0/565453,18/0/565453,40/0/565453,-12/9/565553,-12/13/565553"
-Text_animation:=
+Text_animation:="|<animation_E>*83$5.zzs07CQ03bC07zzU"
 Text_between_2_game1:=
 Text_between_2_game2:=
 
@@ -197,7 +197,8 @@ play_minigame()
     {
         if(clip_xy(X,Y)) ; 1 means safe
         {
-            FindText().Click(X, Y, "L")
+            ; FindText().Click(X, Y, "L")
+            Click,%X%,%Y%
         }
     }
     else
@@ -208,7 +209,8 @@ play_minigame()
         {
             if(clip_xy(X,Y)) ; 1 means safe
             {
-                FindText().Click(X, Y, "L")
+                ; FindText().Click(X, Y, "L")
+                Click,%X%,%Y%
             }
         }
 
@@ -287,8 +289,7 @@ fight_minion(pos)
     ; todo: check if jump twice
     Click,%x%,%y%,Right,2
     Click,%x%,%y%,Down
-    ; todo: move until near hp_bar
-    if (ok:=FindText(X,Y,sr_full.x0,sr_full.y0,sr_full.x1,sr_full.y1,0,0,Text_hp_bar,,,,,,9))
+    if (ok:=FindText(X,Y,sr_full.x0,sr_full.y0,sr_full.x1,sr_full.y1,0,0,Text_hp_bar,,0,,,,9))
     {
         for i,v in ok
         {
@@ -297,8 +298,8 @@ fight_minion(pos)
                 ToolTip, hp_bar, v[1], v[2], i
             }
         }
-        x:=ok[1].x+75
-        y:=ok[1].y+130
+        x:=ok[1].x+hp_bar_2_hit_box_offset.x
+        y:=ok[1].y+hp_bar_2_hit_box_offset.y
     }
     Click,%x%,%y%,Down
     cast_rand_skill(key_list_full)
@@ -327,6 +328,9 @@ rand_move()
 
 skip_animation(pos)
 {
+    x:=pos.x
+    y:=pos.y
+    Click,%x%,%y%
 }
 
 check_hp_mp()
@@ -370,7 +374,8 @@ F4:: Reload
         switch stat
         {
         case "idle":
-            tooltip_dbg("s_idle",0,0,20)
+            ; tooltip_dbg("s_idle",0,0,20)
+            ToolTip, s_idle,,,20
             check_maintenance()
             rand_move()
 

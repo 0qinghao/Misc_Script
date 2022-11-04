@@ -3,13 +3,13 @@
 
 qp = 0:51;
 
-lambda2_src = 0.038 .* exp(0.234 .* qp);
+lambda2_src = 0.74 * 0.5 * 2 .^ (max(0,(qp-12))/3) .* min(max((qp-5)/6,2),4);
 lambda2_src = round(lambda2_src * 256);
  
 % lambda2_tn = 0.01 .* exp(0.2 .* qp);
 % lambda2_tn = round(lambda2_tn * 256);
 
-lambda2_tn = 0.74 * 0.5 * 2 .^ (max(0,(qp-12))/3) .* min(max((qp+4)/8,2),4);
+lambda2_tn = 0.55 * 0.5 * 2 .^ (max(0,(qp-12))/3) .* min(max((qp-12)/6,2),4);
 lambda2_tn = round(lambda2_tn*256);
 
 fprintf('{\n')
