@@ -8,9 +8,9 @@ flg = 0
 repair_pad_flg = 0
 last_f11 = 0
 
-^t:: flg := !flg
+^y:: flg := !flg
 
-^r::
+^t::
 	DllCall("QueryPerformanceFrequency","Int64*",QuadPart)
 	flg = 0
 	repair_pad_flg = 0
@@ -33,7 +33,7 @@ last_f11 = 0
 			Click, 1405, 728, 30 ; ×åÈº
 ;			Click, 1405, 915, 30 ; 1²ã
 			sleep, 100
-			Click, 1224, 880
+			Click, 1224, 780
 			sleep, 100
 			Click, 1686, 1035
 		}
