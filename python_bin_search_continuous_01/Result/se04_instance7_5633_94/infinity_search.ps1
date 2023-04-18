@@ -1,7 +1,8 @@
 # 可配置
-$python = "D:\Programs\Python\Python39\python.exe"
-# $yuv_dir1 = "D:\src_yuv\4cif_704x576"
-$yuv_dir2 = "D:\src_yuv\artificial\ClassF_scale", "D:\src_yuv\artificial\SCC_scale"
+$python = "C:\Users\rin.lin\python-3.10.10-embed-amd64\python.exe"
+#$yuv_dir1 = "C:\Users\rin.lin\src_yuv\4cif_704x576"
+
+$yuv_dir2 = "C:\Users\rin.lin\src_yuv\artificitial\ClassF_scale","C:\Users\rin.lin\src_yuv\artificitial\SCC_scale"
 
 # 基本变量
 $root_dir = Get-Location 
