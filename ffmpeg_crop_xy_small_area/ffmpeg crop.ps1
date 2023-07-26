@@ -1,0 +1,1 @@
+ffmpeg.exe  -pixel_format yuv420p -video_size 1920x1088 -i D:\FH420_300f\outdoor_day_8M_1920x1088_872frames.yuv -vf "crop=128:64:576:640" outdoor_day_8m_128x64_crop.yuv
