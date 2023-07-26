@@ -12,13 +12,11 @@ Loop
 		break
 	}
 		
-    Click, 1500, 700, Left
+    Click, 1800, 700, Left
     Sleep, 1000
-    Send, {f}
+    Send, {x}
     Sleep, 1000
-    Click, 950, 850, Left
-    Sleep, 1000
-    Click, 952, 598, Left
+    Click, 1280, 850, Left
     Sleep, 1000
 }
 return
