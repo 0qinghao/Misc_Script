@@ -29,7 +29,7 @@ rem set label2=PTv3
 rem set label3=MC_1228
 rem set label4=MC_new_SAOw8-20
 
-rem FH(PTv2) stream need additional options, to make color range and play speed suitable
+rem FH(PTv2) stream contain VUI info, which assign frame rate (vui_timing_info_present_flag==1), need additional options to make color range and play speed suitable
 rem setpts=2*PTS
 set special_cfg1=,setpts=2*PTS
 set special_cfg2=
