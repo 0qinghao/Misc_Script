@@ -1,76 +1,81 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-rem stream folder, stream suffix, label
-set f1=D:\FH_PT\PTv2_FH_H265_2M
-set f2=D:\FH_PT\PTv3
-set f3=D:\board_demo_stream\2022_12_12_cbr2M
-set f4=D:\run_enc_script\Result_2023_02_07_0119_w_exmvsi64896_8-20
+@REM stream folder, stream suffix, label
+@REM 2x2 raster
+set f0=D:\board_demo_stream\2023_09_22_XC00_cbr\
+set f1=D:\board_demo_stream\2023_09_22_XC00_cbr\
+set f2=D:\board_demo_stream\2023_09_22_XC00_cbr\
+set f3=D:\board_demo_stream\2023_09_22_XC00_cbr\
 
-set suffix1=_blk_cbr_2M_FH.h265
-set suffix2=.265
-set suffix3=1228.h265
-set suffix4=_cbr_2M.h265
+set suffix0=PTV3.h265
+set suffix1=XC01.h265
+set suffix2=FY11.h265
+set suffix3=XC01.h265
 
-rem get seq name, cat string
+@REM get seq name, cat string
 set seq=%1
-set stm1="%f1%/%seq%/%seq%%suffix1%"
-set stm2="%f2%/%seq%/%seq%%suffix2%"
-::set stm3="%f3%/%seq%/%seq%%suffix3%"
+set stm0="%f0%/%seq%/%suffix0%"
+set stm1="%f1%/%seq%/%suffix1%"
+@REM set stm2="%f2%/%seq%/%seq%%suffix2%"
+set stm2="%f2%/%seq%/%suffix2%"
 set stm3="%f3%/%seq%/%suffix3%"
-set stm4="%f4%/%seq%/%seq%%suffix4%"
 
-set label1=
-set label2=
-set label3=
-set label4=
-rem set label1=PTv2
-rem set label2=PTv3
-rem set label3=MC_1228
-rem set label4=MC_new_SAOw8-20
+@REM set label0=
+@REM set label1=
+@REM set label2=
+@REM set label3=
+set label0=PTv3
+set label1=XC01
+set label2=FY11
+set label3=XC01
 
-rem FH(PTv2) stream contain VUI info, which assign frame rate (vui_timing_info_present_flag==1), need additional options to make color range and play speed suitable
-rem setpts=2*PTS
-set special_cfg1=,setpts=2*PTS
+@REM FH(PTv2) stream contain VUI info, which assign frame rate (vui_timing_info_present_flag=1), need additional options to make and play speed suitable
+@REM setpts=2*PTS
+set special_cfg0=
+set special_cfg1=
 set special_cfg2=
 set special_cfg3=
-set special_cfg4=
+@REM set special_cfg0=out_range=full
+@REM set special_cfg1=out_range=full
+@REM set special_cfg2=out_range=full
+@REM set special_cfg3=out_range=full
 
-rem if no PTv3 stream
-if not exist %stm2% (
-set stm2=%stm1%
-set label2=%label1%
-set special_cfg2=%special_cfg1%
+@REM if no PTv3 stream
+if not exist %stm0% (
+set "stm0=%stm0:PTv3=PTv2%"
+set "label0=%label0:PTv3=PTv2%"
+set special_cfg0="%special_cfg0%,setpts=2*PTS"
 )
 
-rem set play speed (=25 normal; <25 slow; >25 fast(limited by hardware))
-set speed=25
+@REM set play speed (=25 normal; <25 slow; >25 fast(limited by hardware))
+set speed=1
 
-rem ffmpeg / ffplay path
+@REM ffmpeg / ffplay path
 set ffmpeg="D:\Program Files (x86)\ffmpeg\bin\ffmpeg.exe"
 set ffplay="D:\Program Files (x86)\ffmpeg\bin\ffplay.exe"
 
-rem set screen size
+@REM set screen size
 set /a sw=1920*2
 set /a sh=1080*2
-rem if %sw%*9/16 neq %sh% (
-rem     set /a sh=%sw%*9/16
-rem )
+@REM if %sw%*9/16 neq %sh% (
+@REM     set /a sh=%sw%*9/16
+@REM )
 
-rem 某些版本的 ffmpeg 在不指定字体的情况下会直接 error (大部分版本不指定字体会默认使用 times)
-rem label theme
+@REM 某些版本的 ffmpeg 在不指定字体的情况下会直接 error (大部分版本不指定字体会默认使用 times)
+@REM label theme
 set label_font_common_cfg=fontfile=simhei.ttf:fontsize=%sw%/50:fontcolor=red
 
-rem -f avi: select a container which support rawvideo, avi/nut/matroska...
-rem -left 9999 -fs: make sure display in the second screen (the right one)
+@REM -f avi: select a container which support rawvideo, avi/nut/matroska...
+@REM -left 9999 -fs: make sure display in the second screen (the right one)
 %ffmpeg% ^
--i %stm1% -i %stm2% -i %stm3% -i %stm4% ^
--filter_complex "nullsrc=size=%sw%x%sh%:rate=25[base]; [0:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:out_range=full%special_cfg1%[0:tmp]; [1:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:out_range=full%special_cfg2%[1:tmp]; [2:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:out_range=full%special_cfg3%[2:tmp]; [3:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:out_range=full%special_cfg4%[3:tmp]; [base][0:tmp]overlay=0:0[a]; [a][1:tmp]overlay=%sw%/2:0[b]; [b][2:tmp]overlay=0:%sh%/2[c]; [c][3:tmp]overlay=%sw%/2:%sh%/2[d]; [d]setpts=25/%speed%*PTS" ^
+-i %stm0% -i %stm1% -i %stm2% -i %stm3% ^
+-filter_complex "nullsrc=size=%sw%x%sh%:rate=25[base]; [0:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:%special_cfg0%[0:tmp]; [1:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:%special_cfg1%[1:tmp]; [2:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:%special_cfg2%[2:tmp]; [3:v]crop=1920:1080:0:0,scale=%sw%/2:%sh%/2:%special_cfg3%[3:tmp]; [base][0:tmp]overlay=0:0[a]; [a][1:tmp]overlay=%sw%/2:0[b]; [b][2:tmp]overlay=0:%sh%/2[c]; [c][3:tmp]overlay=%sw%/2:%sh%/2[d]; [d]setpts=25/%speed%*PTS" ^
 -f avi -c:v rawvideo -pix_fmt yuv420p - | %ffplay% ^
--vf "drawtext=%label_font_common_cfg%:text=%%{frame_num}:x=(w-tw)/2:y=h-lh,drawtext=%label_font_common_cfg%:text=%label1%:x=0:y=0,drawtext=%label_font_common_cfg%:text=%label2%:x=%sw%/2:y=0,drawtext=%label_font_common_cfg%:text=%label3%:x=0:y=%sh%/2,drawtext=%label_font_common_cfg%:text=%label4%:x=%sw%/2:y=%sh%/2" ^
+-vf "drawtext=%label_font_common_cfg%:text=%%{frame_num}:x=(w-tw)/2:y=h-lh,drawtext=%label_font_common_cfg%:text=%label0%:x=0:y=0,drawtext=%label_font_common_cfg%:text=%label1%:x=%sw%/2:y=0,drawtext=%label_font_common_cfg%:text=%label2%:x=0:y=%sh%/2,drawtext=%label_font_common_cfg%:text=%label3%:x=%sw%/2:y=%sh%/2" ^
 -noframedrop -left 9999 -fs -
 
-rem -vf "hflip,vflip"
+@REM -vf "hflip,vflip"
 
-rem -f avi -c:v libx265 -pix_fmt yuv420p -x265-params "lossless=1" overlay_lossless.hevc -y
-rem -f avi -c:v rawvideo -pix_fmt yuv420p overlay_raw.avi -y
+@REM -f avi -c:v libx265 -pix_fmt yuv420p -x265-params "lossless=1" overlay_lossless.hevc -y
+@REM -f avi -c:v rawvideo -pix_fmt yuv420p overlay_raw.avi -y
