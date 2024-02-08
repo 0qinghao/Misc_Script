@@ -1,1 +1,3 @@
 ffmpeg -s:v 176x144 -pix_fmt yuv420p -i /mnt/d/src_yuv/qcif_176x144/highway_qcif_176x144.yuv -s:v 176x144 -pix_fmt yuv420p -i /mnt/d/src_yuv/artificial/rand/rand_32x32x1p5x50000_bytes.yuv -filter_complex "[0:v]crop=in_w/2:in_h:0:0[left];[1:v]crop=in_w/2:in_h:in_w/2:0[right];[left][right]hstack" -frames:v 100 -c:v rawvideo -pix_fmt yuv420p left_highway_right_rand_176x144_100f.yuv
+
+ffmpeg -s:v 176x144 -pix_fmt yuv420p -i /mnt/d/src_yuv/qcif_176x144/highway_qcif_176x144.yuv -s:v 176x144 -pix_fmt yuv420p -i /mnt/d/src_yuv/artificial/rand/rand_32x32x1p5x50000_bytes.yuv -filter_complex "[0:v]crop=in_w/2:in_h:0:0[right];[1:v]crop=in_w/2:in_h:in_w/2:0[left];[left][right]hstack" -frames:v 100 -c:v rawvideo -pix_fmt yuv420p right_highway_left_rand_176x144_100f.yuv
