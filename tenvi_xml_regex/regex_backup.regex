@@ -1,0 +1,6 @@
+(^\D+.*)([\d\D\n]+)
+<!-- $1 -->\n<?xml version="1.0" encoding="euc-kr" ?>\n<sym type="reward_table">$2\n</sym>
+
+^(\d+)(\D+)\s+(\d+)$
+<drop itemCode="$1" prob="$3" /> <!-- $2 -->
+
