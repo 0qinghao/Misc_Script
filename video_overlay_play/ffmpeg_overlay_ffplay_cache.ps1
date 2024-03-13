@@ -3,32 +3,44 @@
 $f0 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
 $f1 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
 $f2 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
-$f3 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
+# $f3 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
+# $f3 = "D:\run_enc\ResultRC_2023_09_26_0144 df128 saomvx2 forcepart0 skipx0.11 lx0.7 intraw6\"
+$f3 = "D:\run_enc\ResultRC_2023_09_27_0127 0922 df128 saomvx2 forcepart0 skip91 lx0.7 intraw6\"
 
 $suffix0 = "PTV3.h265"
 $suffix1 = "XC01.h265"
 $suffix2 = "FY11.h265"
-$suffix3 = "XC01.h265"
+# $suffix3 = "XC01.h265"
+$suffix3 = "_cbr_2M.h265"
 
-### 如果要求调整画面位置, 只修改这部分 start ###
+### 如果要求调整画面顺序, 只修改这部分 start ###
 # Get seq name, cat string
 $seq = $args[0]
 $stm0 = "$f0\$seq\$suffix0"
 $stm1 = "$f1\$seq\$suffix1"
 $stm2 = "$f2\$seq\$suffix2"
-$stm3 = "$f3\$seq\$suffix3"
+# $stm3 = "$f3\$seq\$suffix3"
+$stm3 = "$f3\$seq\$seq$suffix3"
 
 # Set labels
 $label0 = "PTv3"
 $label1 = "XC01"
 $label2 = "FY11"
-$label3 = "XC01"
+$label3 = "XC00 preview"
 
 # Special configurations
-$special_cfg0 = ""
+$special_cfg0 = "out_range=full"
 $special_cfg1 = ""
 $special_cfg2 = ""
 $special_cfg3 = ""
+# $special_cfg0 = ""
+# $special_cfg1 = ""
+# $special_cfg2 = ""
+# $special_cfg3 = ""
+# $special_cfg0 = "out_range=full"
+# $special_cfg1 = "out_range=full"
+# $special_cfg2 = "out_range=full"
+# $special_cfg3 = "out_range=full"
 
 # Check if PTv3 stream exists
 if (-not (Test-Path -Path $stm0 -PathType Leaf)) {
@@ -36,7 +48,7 @@ if (-not (Test-Path -Path $stm0 -PathType Leaf)) {
     $label0 = $label0 -replace "PTv3", "PTv2"
     $special_cfg0 = "$special_cfg0,setpts=2*PTS"
 }
-### 如果要求调整画面位置, 只修改这部分 end ###
+### 如果要求调整画面顺序, 只修改这部分 end ###
 
 # Set play speed (=25 normal; <25 slow; >25 fast(limited by hardware))
 $speed = 25
