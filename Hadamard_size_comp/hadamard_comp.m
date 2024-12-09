@@ -5,7 +5,7 @@ satd_16 = zeros(1,test_num);
 h4 = hadamard(4);h8=hadamard(8);h16=hadamard(16);
 
 for i=1:100
-   dif = round(randn(16)*4); 
+   dif = round(rand(16)*255); 
    
    satd_16(i) = sum(abs(h16*dif*h16),[1,2]);
    satd_8(i) = sum(abs(h8*dif(1:8,1:8)*h8),[1,2]) + ...
