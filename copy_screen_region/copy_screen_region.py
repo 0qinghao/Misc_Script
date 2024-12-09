@@ -5,7 +5,6 @@ from io import BytesIO
 
 
 class ScreenCaptureApp:
-
     def __init__(self, root):
         self.root = root
         self.root.title("屏幕实时捕获")
@@ -21,7 +20,7 @@ class ScreenCaptureApp:
         self.root.bind("<MouseWheel>", self.resize)
 
         # 获取捕获区域，如果用户未输入，默认的区域
-        self.capture_region = self.get_capture_region_dialog() or (900, 600, 300, 180)
+        self.capture_region = self.get_capture_region_dialog() or (645, 95, 183, 80)
         self.root.geometry(f"{self.capture_region[2]}x{self.capture_region[3]}")
 
         self.label = tk.Label(self.root)
@@ -75,7 +74,7 @@ class ScreenCaptureApp:
         self.root.attributes("-alpha", self.transparency)
 
         # 更新一次屏幕截图
-        self.root.after(1, self.update_screenshot)
+        self.root.after(100, self.update_screenshot)
 
     # 获取捕获区域
     def get_capture_region_dialog(self):
