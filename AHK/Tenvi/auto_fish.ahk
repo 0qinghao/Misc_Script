@@ -9,15 +9,33 @@ search_left := 0
 search_bottom := 1100
 search_right := 2100
 fish_images := ["fish_eating1.bmp", "fish_eating2.bmp", "fish_eating3.bmp", "fish_eating4.bmp", "fish_eating5.bmp", "fish_eating6.bmp"]
-
-flg = 0
+channel_switch_interval := 120 ; 配置切换频道的周期（单位：秒），设置为 0 表示不切换频道
 
 ^f::
-    DllCall("QueryPerformanceFrequency", "Int64*", QuadPart)
+    ; 获取开始时间，记录周期的开始
+    last_switch_time := A_TickCount
 
-    ; 全自动钓鱼流程
     Loop
     {
+        ; 如果设定的频道切换周期大于0，则检查是否到达切换频道的时间
+        if (channel_switch_interval > 0 && A_TickCount - last_switch_time > channel_switch_interval * 1000)
+        {
+            ; 切换频道操作
+            ToolTip, Switching channel...
+            Send, {Esc}  ; 按下 ESC 键
+            Sleep, 300
+            Send, {Enter}  ; 按下 Enter 键
+            Sleep, 300
+            Send, {Right}  ; 按下右方向键
+            Sleep, 300
+            Send, {Enter}  ; 按下 Enter 键
+            ToolTip, Channel switched! ; 提示频道切换成功
+            Sleep, 1000
+
+            ; 更新最后切换时间
+            last_switch_time := A_TickCount
+        }
+
         ; 抛竿操作
         Send, d  ; 按下 'd' 键抛竿
         ToolTip, Casting rod... ; 提示抛竿操作
@@ -25,7 +43,6 @@ flg = 0
 
         ; 设置最大等待时间，用于判断是否成功抛竿
         start_time := A_TickCount
-        fish_caught := false  ; 标记是否检测到鱼上钩
 
         ; 检测鱼是否上钩
         Loop
@@ -41,21 +58,21 @@ flg = 0
                     Send, v  ; 收杆
                     ToolTip, Fish Hooked!
                     Sleep, 100  ; 等待收杆动作完成
-                    fish_caught := true
-                    break
+
+                    ; 增加拾取功能
+                    ToolTip, Picking up the fish...
+                    Send, {Space}  ; 按下空格键拾取
+                    ToolTip, Fish picked up! ; 提示成功拾取
+
+                    break 2  ; 直接退出两层循环
                 }
             }
 
-            ; 如果鱼未上钩，检查超时机制，认为抛竿失败
-            if (A_TickCount - start_time > 12000)  ; 超过12秒未检测到鱼，认为抛竿失败
+            ; 如果超时未检测到鱼，重新抛竿
+            if (A_TickCount - start_time > 12000)  ; 超过12秒未检测到鱼
             {
                 ToolTip, Failed to catch fish _ retrying ; 提示错误信息
-                Send, d  ; 重新抛竿
                 break
             }
-
-            ; 若成功捕捉到鱼，退出循环
-            if (fish_caught)
-                break
         }
     }
