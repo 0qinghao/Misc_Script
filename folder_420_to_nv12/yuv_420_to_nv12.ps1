@@ -28,10 +28,22 @@ if ($yuvFiles.Count -eq 0) {
 # 转换每个 YUV 文件
 foreach ($file in $yuvFiles) {
     $inputFilePath = $file.FullName
-    $outputFilePath = [System.IO.Path]::ChangeExtension($inputFilePath, "nv12.yuv")
+    $fileName = $file.Name
+
+    # 提取文件名中的宽度和高度
+    if ($fileName -match '(\d+)x(\d+)') {
+        $Width = [int]$matches[1]
+        $Height = [int]$matches[2]
+    }
+
+    # 删除 "420"、"420p" 或 "_420" 或 "_420p" 部分
+    $outputFileName = $fileName -replace '_?420p?', ''  # 删除 "420"、"420p"、"_420"、"_420p" 
+
+    # 生成新的输出路径，加入 "nv12" 后缀
+    $outputFilePath = [System.IO.Path]::Combine($FolderPath, [System.IO.Path]::GetFileNameWithoutExtension($outputFileName) + "_nv12.yuv")
 
     # 构建 ffmpeg 命令
-    $ffmpegCmd = "ffmpeg -y -f rawvideo -video_size $Width`x$Height -pix_fmt yuv420p -i `"$inputFilePath`" -pix_fmt nv12 `"$outputFilePath`""
+    $ffmpegCmd = "ffmpeg -y -f rawvideo -video_size ${Width}x${Height} -pix_fmt yuv420p -i `"$inputFilePath`" -pix_fmt nv12 `"$outputFilePath`""
 
     # 执行 ffmpeg 命令
     Write-Output "转换文件：$inputFilePath 到 $outputFilePath"
