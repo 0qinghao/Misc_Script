@@ -1,77 +1,90 @@
 #NoEnv
 #SingleInstance Force
-SetBatchLines, -1  ; ÉèÖÃ½Å±¾ÏìÓ¦ËÙ¶È
+SetBatchLines, -1  ; è®¾ç½®è„šæœ¬å“åº”é€Ÿåº¦
 SetStoreCapsLockMode, Off
 
-; ÅäÖÃËÑË÷ÇøÓòºÍÓãÉÏ¹³µÄÍ¼ÏñÎÄ¼ş
-search_top := 700
-search_left := 0
-search_bottom := 1100
-search_right := 2100
+; é…ç½®æœç´¢åŒºåŸŸå’Œé±¼ä¸Šé’©çš„å›¾åƒæ–‡ä»¶
+search_top := 650
+search_left := 1080
+search_bottom := 750
+search_right := 1250
 fish_images := ["fish_eating1.bmp", "fish_eating2.bmp", "fish_eating3.bmp", "fish_eating4.bmp", "fish_eating5.bmp", "fish_eating6.bmp"]
-channel_switch_interval := 120 ; ÅäÖÃÇĞ»»ÆµµÀµÄÖÜÆÚ£¨µ¥Î»£ºÃë£©£¬ÉèÖÃÎª 0 ±íÊ¾²»ÇĞ»»ÆµµÀ
+channel_switch_interval := 00 ; é…ç½®åˆ‡æ¢é¢‘é“çš„å‘¨æœŸï¼ˆå•ä½ï¼šç§’ï¼‰ï¼Œè®¾ç½®ä¸º 0 è¡¨ç¤ºä¸åˆ‡æ¢é¢‘é“
 
 ^f::
-    ; »ñÈ¡¿ªÊ¼Ê±¼ä£¬¼ÇÂ¼ÖÜÆÚµÄ¿ªÊ¼
+    ; è·å–å¼€å§‹æ—¶é—´ï¼Œè®°å½•å‘¨æœŸçš„å¼€å§‹
     last_switch_time := A_TickCount
+    
+	ToolTip, left_top, search_left, search_top, 20
+	ToolTip, right_bottom, search_right, search_bottom, 19
 
     Loop
     {
-        ; Èç¹ûÉè¶¨µÄÆµµÀÇĞ»»ÖÜÆÚ´óÓÚ0£¬Ôò¼ì²éÊÇ·ñµ½´ïÇĞ»»ÆµµÀµÄÊ±¼ä
+        ; å¦‚æœè®¾å®šçš„é¢‘é“åˆ‡æ¢å‘¨æœŸå¤§äº0ï¼Œåˆ™æ£€æŸ¥æ˜¯å¦åˆ°è¾¾åˆ‡æ¢é¢‘é“çš„æ—¶é—´
         if (channel_switch_interval > 0 && A_TickCount - last_switch_time > channel_switch_interval * 1000)
         {
-            ; ÇĞ»»ÆµµÀ²Ù×÷
+			; æ£€æŸ¥æ˜¯å¦é—ç•™æ‹¾å–ç»‘å®šç¡®è®¤
+			Click, 0, 0, 0
+			ImageSearch, FoundX, FoundY, 0, 0, 5000, 5000, *90 yes_button.bmp
+			if (ErrorLevel = 0)
+			{
+				Click, %FoundX%, %FoundY%
+				Sleep, 1000
+				continue
+			}
+			
+            ; åˆ‡æ¢é¢‘é“æ“ä½œ
             ToolTip, Switching channel...
-            Send, {Esc}  ; °´ÏÂ ESC ¼ü
-            Sleep, 300
-            Send, {Enter}  ; °´ÏÂ Enter ¼ü
-            Sleep, 300
-            Send, {Right}  ; °´ÏÂÓÒ·½Ïò¼ü
-            Sleep, 300
-            Send, {Enter}  ; °´ÏÂ Enter ¼ü
-            ToolTip, Channel switched! ; ÌáÊ¾ÆµµÀÇĞ»»³É¹¦
-            Sleep, 1000
+            Send, {Esc}  ; æŒ‰ä¸‹ ESC é”®
+            Sleep, 500
+            Send, {Enter}  ; æŒ‰ä¸‹ Enter é”®
+            Sleep, 500
+            Send, {Right}  ; æŒ‰ä¸‹å³æ–¹å‘é”®
+            Sleep, 500
+            Send, {Enter}  ; æŒ‰ä¸‹ Enter é”®
+            ToolTip, Channel switched! ; æç¤ºé¢‘é“åˆ‡æ¢æˆåŠŸ
+            Sleep, 2000
 
-            ; ¸üĞÂ×îºóÇĞ»»Ê±¼ä
+            ; æ›´æ–°æœ€ååˆ‡æ¢æ—¶é—´
             last_switch_time := A_TickCount
         }
 
-        ; Å×¸Í²Ù×÷
-        Send, d  ; °´ÏÂ 'd' ¼üÅ×¸Í
-        ToolTip, Casting rod... ; ÌáÊ¾Å×¸Í²Ù×÷
-        Sleep, 1000  ; µÈ´ıÅ×¸Í¶¯»­Íê³É
+        ; æŠ›ç«¿æ“ä½œ
+        Send, d  ; æŒ‰ä¸‹ 'd' é”®æŠ›ç«¿
+        ToolTip, Casting rod... ; æç¤ºæŠ›ç«¿æ“ä½œ
+        Sleep, 1000  ; ç­‰å¾…æŠ›ç«¿åŠ¨ç”»å®Œæˆ
 
-        ; ÉèÖÃ×î´óµÈ´ıÊ±¼ä£¬ÓÃÓÚÅĞ¶ÏÊÇ·ñ³É¹¦Å×¸Í
+        ; è®¾ç½®æœ€å¤§ç­‰å¾…æ—¶é—´ï¼Œç”¨äºåˆ¤æ–­æ˜¯å¦æˆåŠŸæŠ›ç«¿
         start_time := A_TickCount
 
-        ; ¼ì²âÓãÊÇ·ñÉÏ¹³
+        ; æ£€æµ‹é±¼æ˜¯å¦ä¸Šé’©
         Loop
         {
             ToolTip, Checking for fish...
-
-            ; ±éÀúËùÓĞÍ¼ÏñÎÄ¼ş½øĞĞËÑË÷
+            
+            ; éå†æ‰€æœ‰å›¾åƒæ–‡ä»¶è¿›è¡Œæœç´¢
             for index, fish_image in fish_images
             {
-                ImageSearch, FoundX, FoundY, search_left, search_top, search_right, search_bottom, *97 %fish_image%
+                ImageSearch, FoundX, FoundY, search_left, search_top, search_right, search_bottom, *90 %fish_image%
                 if (ErrorLevel = 0)
                 {
-                    Send, v  ; ÊÕ¸Ë
+                    Send, v  ; æ”¶æ†
                     ToolTip, Fish Hooked!
-                    Sleep, 100  ; µÈ´ıÊÕ¸Ë¶¯×÷Íê³É
+                    Sleep, 0  ; ç­‰å¾…æ”¶æ†åŠ¨ä½œå®Œæˆ
 
-                    ; Ôö¼ÓÊ°È¡¹¦ÄÜ
+                    ; å¢åŠ æ‹¾å–åŠŸèƒ½
                     ToolTip, Picking up the fish...
-                    Send, {Space}  ; °´ÏÂ¿Õ¸ñ¼üÊ°È¡
-                    ToolTip, Fish picked up! ; ÌáÊ¾³É¹¦Ê°È¡
+                    Send, {Space}  ; æŒ‰ä¸‹ç©ºæ ¼é”®æ‹¾å–
+                    ToolTip, Fish picked up! ; æç¤ºæˆåŠŸæ‹¾å–
 
-                    break 2  ; Ö±½ÓÍË³öÁ½²ãÑ­»·
+                    break 2  ; ç›´æ¥é€€å‡ºä¸¤å±‚å¾ªç¯
                 }
             }
 
-            ; Èç¹û³¬Ê±Î´¼ì²âµ½Óã£¬ÖØĞÂÅ×¸Í
-            if (A_TickCount - start_time > 12000)  ; ³¬¹ı12ÃëÎ´¼ì²âµ½Óã
+            ; å¦‚æœè¶…æ—¶æœªæ£€æµ‹åˆ°é±¼ï¼Œé‡æ–°æŠ›ç«¿
+            if (A_TickCount - start_time > 20000)  ; è¶…è¿‡12ç§’æœªæ£€æµ‹åˆ°é±¼
             {
-                ToolTip, Failed to catch fish _ retrying ; ÌáÊ¾´íÎóĞÅÏ¢
+                ToolTip, Failed to catch fish _ retrying ; æç¤ºé”™è¯¯ä¿¡æ¯
                 break
             }
         }
