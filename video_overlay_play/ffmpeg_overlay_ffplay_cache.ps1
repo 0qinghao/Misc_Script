@@ -1,42 +1,34 @@
 # stream folder, stream suffix, label
 # 2x2 raster
-$f0 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
-$f1 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
-$f2 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
-# $f3 = "D:\board_demo_stream\2023_09_22_XC00_cbr\"
-# $f3 = "D:\run_enc\ResultRC_2023_09_26_0144 df128 saomvx2 forcepart0 skipx0.11 lx0.7 intraw6\"
-$f3 = "D:\run_enc\ResultRC_2023_09_27_0127 0922 df128 saomvx2 forcepart0 skip91 lx0.7 intraw6\"
+$f0 = "T:\Derek.You\Server\XC00_Performance_RC\XC00\Result265_2023_09_22_XC00_CBR2M"
+$f1 = "T:\Derek.You\Server\XC00_Performance_RC\XC00\Result265_2023_09_22_XC00_VBRL"
+$f2 = "T:\Derek.You\Server\XC00_Performance_RC\XC00\Result265_2023_09_22_XC00_VBRM"
+$f3 = "T:\Derek.You\Server\XC00_Performance_RC\XC00\Result265_2023_09_22_XC00_VBRH"
 
-$suffix0 = "PTV3.h265"
-$suffix1 = "XC01.h265"
-$suffix2 = "FY11.h265"
-# $suffix3 = "XC01.h265"
-$suffix3 = "_cbr_2M.h265"
+$suffix0 = "_cbr_2M.h265"
+$suffix1 = "_vbrL_2M.h265"
+$suffix2 = "_vbrM_2M.h265"
+$suffix3 = "_vbrH_2M.h265"
 
 ### 如果要求调整画面顺序, 只修改这部分 start ###
 # Get seq name, cat string
 $seq = $args[0]
-$stm0 = "$f0\$seq\$suffix0"
-$stm1 = "$f1\$seq\$suffix1"
-$stm2 = "$f2\$seq\$suffix2"
-# $stm3 = "$f3\$seq\$suffix3"
+$stm0 = "$f0\$seq\$seq$suffix0"
+$stm1 = "$f1\$seq\$seq$suffix1"
+$stm2 = "$f2\$seq\$seq$suffix2"
 $stm3 = "$f3\$seq\$seq$suffix3"
 
 # Set labels
-$label0 = "PTv3"
-$label1 = "XC01"
-$label2 = "FY11"
-$label3 = "XC00 preview"
+$label0 = "cbr 2M"
+$label1 = "vbrl 2M"
+$label2 = "vbrm 2M"
+$label3 = "vbrh 2M"
 
 # Special configurations
-$special_cfg0 = "out_range=full"
+$special_cfg0 = ""
 $special_cfg1 = ""
 $special_cfg2 = ""
 $special_cfg3 = ""
-# $special_cfg0 = ""
-# $special_cfg1 = ""
-# $special_cfg2 = ""
-# $special_cfg3 = ""
 # $special_cfg0 = "out_range=full"
 # $special_cfg1 = "out_range=full"
 # $special_cfg2 = "out_range=full"
@@ -54,8 +46,8 @@ if (-not (Test-Path -Path $stm0 -PathType Leaf)) {
 $speed = 25
 
 # ffmpeg / ffplay paths
-$ffmpeg = "D:\Program Files (x86)\ffmpeg\bin\ffmpeg.exe"
-$ffplay = "D:\Program Files (x86)\ffmpeg\bin\ffplay.exe"
+$ffmpeg = "C:\Users\rin.lin\ffmpeg\bin\ffmpeg.exe"
+$ffplay = "C:\Users\rin.lin\ffmpeg\bin\ffplay.exe"
 
 # Set screen size
 $sw = 1920 * 2

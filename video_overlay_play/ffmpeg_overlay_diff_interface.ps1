@@ -1,8 +1,8 @@
 #################### para part ####################
 Param 
 (
-    $parent_f0 = "./ResultRC_2023_11_01_0000_NO_FBC", 
-    $parent_f1 = "./ResultRC_2023_11_08_0444_FBC65",
+    $parent_f0 = "C:\Users\rin.lin\lossy_FBC_demo\ResultRC_2023_11_01_0000_NO_FBC", 
+    $parent_f1 = "C:\Users\rin.lin\lossy_FBC_demo\ResultRC_2023_11_08_0444_FBC65",
     $yuv_size = "1920x1088"
 )
 #################### para part end ####################
